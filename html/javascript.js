@@ -4913,16 +4913,23 @@ ParseElements(elements, "Elements");
           // Make the atomic mass container
           var massDiv = document.createElement("div");
           massDiv.innerHTML = Math.round(100 * json.atomic_mass) / 100;
+          var detailButton = document.createElement("button");
 
-        var use = 'button" value="New Tab" onclick="window.open(' + json.source + "')";
-
-          elementNode.setAttribute("input", use);
+          detailButton.setAttribute("type","button ");
+          detailButton.setAttribute("id","btn" + json.symbol);
+          var labelledby = "name" + json.symbol + " btn" + json.symbol;
+          detailButton.setAttribute("aria-labelledby",labelledby);
+          detailButton.setAttribute("onclick","window.open('" + json.source + "');");
+      // Add all the nodes to the <li>
+     
+      // Add the <li> to the <ol>
+      ol.appendChild(elementNode);
           // Add all the nodes to the <li>
           elementNode.appendChild(numberDiv);
           elementNode.appendChild(symbolDiv);
           elementNode.appendChild(nameDiv);
           elementNode.appendChild(massDiv);
-          //elementNode.appendChild(detailButton);
+          elementNode.appendChild(detailButton);
           // Add the <li> to the <ol>
           ol.appendChild(elementNode);
           // Loop through the category and add distinct to array
@@ -4932,39 +4939,109 @@ ParseElements(elements, "Elements");
             // console.log(rawCat);
           }
         }
-        // Create a <dl> to hold categories
-        var dl = document.createElement("dl");
-        for (var i = 0; i < catArray.length; i++) {
-          var catText = catArray[i];
-          var catString;
-          catString = catText.split(' ').join('_');
-          catString = catString.split(',').join('');
-          catString = "cat-" + catString;
-          // console.log(catString);
-          // Make the color container and class it
-          var dt = document.createElement("dt");
-          dt.classList.add(catString);
-          // Make the category container
-          var dd = document.createElement("dd");
-          dd.innerHTML = catText;
-          dd.setAttribute("id", catString);
-        
-          dl.appendChild(dt);
-          dl.appendChild(dd);
-        }
-        // Create a new <li>
-        var keyItem = document.createElement("li");
-        keyItem.setAttribute("role", "presentation");
-        // keyItem.setAttribute("aria-hidden","true");
-        keyItem.setAttribute("id", "Key");
-        // Give it some context
-        var h2 = document.createElement("h2");
-        h2.innerHTML = "Category key:";
-        // Add the context text
-        keyItem.appendChild(h2);
-        // Add the new list to it
-        keyItem.appendChild(dl);
-        // Add this entire mess to the <ol>
-        ol.appendChild(keyItem);
+            // Create a <dl> to hold categories
+    var dl = document.createElement("dl");
+    for (var i = 0; i < catArray.length; i++) {
+      var catText = catArray[i];
+      var catString;
+      catString = catText.split(' ').join('_');
+      catString = catString.split(',').join('');
+      catString = "cat-" + catString;
+      // console.log(catString);
+      // Make the color container and class it
+      var dt = document.createElement("dt");
+      dt.classList.add(catString);
+      // Make the category container
+      var dd = document.createElement("dd");
+      dd.innerHTML = catText;
+      dd.setAttribute("id",catString);
+      // Make the button
+      var showButton = document.createElement("button");
+    
+      var labelledby = " btn-" + catString + " " + catString;
+      showButton.setAttribute("aria-labelledby",labelledby);
+      // Append these to the <dl>
 
+      dl.appendChild(dt);
+      dl.appendChild(dd);
+    }
+    // Create a new <li>
+    var keyItem = document.createElement("li");
+    keyItem.setAttribute("role","presentation");
+    // keyItem.setAttribute("aria-hidden","true");
+    keyItem.setAttribute("id","Key");
+    // Give it some context
+    var h2 = document.createElement("h2");
+    h2.innerHTML = "Category key:";
+    // Add the context text
+    keyItem.appendChild(h2);
+    // Add the new list to it
+    keyItem.appendChild(dl);
+    // Add this entire mess to the <ol>
+    ol.appendChild(keyItem);
+    console.log("ParseElements(): " + e);
+  
+}
+ParseElements(elements, "Elements");
+  
+    ParseElements(elements, "Elements");
+
+      function OpenDialog(eID,elName) {
+        try {
+          DialogTrigger = eID;
+          // Get all the elements to manipulate
+          var body = document.getElementsByTagName("body");
+          var landmarks = document.querySelectorAll("header, main, footer");
+          var overlay = document.getElementById("Overlay");
+          var dialog = document.getElementById("Dialog");
+          var heading = document.getElementById("DialogName");
+          var closeBtn = document.getElementById("DialogClose");
+          // Set the heading
+          heading.innerHTML = elName;
+          // Call the function to populate the dialog
+          ParseElementDetail(elements,"ElementDetail",elName);
+          // Hide the content regions from AT
+          for (var i = 0; i < landmarks.length; i++) {
+            landmarks[i].setAttribute("aria-hidden","true");
+            landmarks[i].setAttribute("inert","");
+          }
+          // Hide the content behind the overlay
+          overlay.style.display = "block";
+          // Add click handler to overlay
+          overlay.setAttribute("onclick","CloseDialog('" + eID + "');");
+          // Kill the page scroll
+          body[0].style.overflow = "hidden";
+          // Set the dialog to modal
+          dialog.setAttribute("aria-modal","true");
+          // dialog.setAttribute("data-id",eID);
+          dialog.removeAttribute("hidden"); 
+          // Put focus on the close button
+          // Normally I would put it on the modal, but this fits
+          closeBtn.setAttribute("onclick","CloseDialog('" + eID + "');");
+          closeBtn.focus();
+        } catch (e) {
+          console.log("OpenDialog(): " + e);
+          ParseElementDetail(elements,"ElementDetail",elName);
+          // Hide the content regions from AT
+          for (var i = 0; i < landmarks.length; i++) {
+            landmarks[i].setAttribute("aria-hidden","true");
+            landmarks[i].setAttribute("inert","");
+          }
+          // Hide the content behind the overlay
+          overlay.style.display = "block";
+          // Add click handler to overlay
+          overlay.setAttribute("onclick","CloseDialog('" + eID + "');");
+          // Kill the page scroll
+          body[0].style.overflow = "hidden";
+          // Set the dialog to modal
+          dialog.setAttribute("aria-modal","true");
+          // dialog.setAttribute("data-id",eID);
+          dialog.removeAttribute("hidden"); 
+          // Put focus on the close button
+          // Normally I would put it on the modal, but this fits
+          closeBtn.setAttribute("onclick","CloseDialog('" + eID + "');");
+          closeBtn.focus();
+                }
       }
+
+      
